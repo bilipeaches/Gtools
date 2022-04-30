@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" />
+    <meta name="renderer" content="webkit" />
+    <meta name="force-rendering" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdui@1.0.2/dist/css/mdui.min.css" />
+    <link rel="stylesheet" href="./style.css">
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/mdui@1.0.2/dist/js/mdui.min.js"></script>
+    <script src="https://v-cn.vaptcha.com/v3.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leancloud-storage@4.12.2/dist/av.min.js"></script>
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <script src="./script.js"></script>
+
+    <title>Gtools</title>
+    <link rel="icon" href="./icon.svg" type="image/x-icon" />
+  </head>
+
+  <body class="mdui-theme-primary-light-blue mdui-theme-accent-blue"> 
+    <!--Upload-->
+    <div class="all">
+      <div class="Upload-dialog">
+        <p class="title">上传资源<button class="mdui-btn mdui-btn-icon mdui-color-theme-accent mdui-ripple up-close">
+          <i class="mdui-icon material-icons">close</i>
+        </button></p>
+        <!--资源名称 res-name-->
+        <div class="mdui-textfield">
+          <label class="mdui-textfield-label">资源名称</label>
+          <input class="mdui-textfield-input res-name" type="text" required maxlength="20"/>
+          <div class="mdui-textfield-error">资源名称不能为空</div>
+        </div>
+        <!--发布者 author-name-->
+        <div class="mdui-textfield">
+          <label class="mdui-textfield-label">发布者</label>
+          <input class="mdui-textfield-input author-name" type="text" required maxlength="20"/>
+          <div class="mdui-textfield-error">请输入发布者姓名</div>
+        </div>
+        <!--适用Godot版本-->
+        <div class="mdui-textfield">
+          <label class="mdui-textfield-label">适用Godot版本</label>
+          <input class="mdui-textfield-input godot-version" type="text" required maxlength="5"/>
+          <div class="mdui-textfield-error">请输入适用Godot版本</div>
+        </div>
+        <!--图片直链-->
+        <div class="mdui-textfield">
+          <label class="mdui-textfield-label">图片直链(没有则直接空着)</label>
+          <input class="mdui-textfield-input img-url" type="text" maxlength="50"/>
+        </div>
+        <!--资源直链-->
+        <div class="mdui-textfield">
+          <label class="mdui-textfield-label">资源直链</label>
+          <input class="mdui-textfield-input res-url" type="text" required maxlength="50"/>
+          <div class="mdui-textfield-error">请输入资源直链</div>
+        </div>
+        <!--资源类型-->
+        <div>
+          <p>资源类型:
+            <select class="mdui-select res-type" mdui-select="{position: 'top'}">
+              <option value="1">场景(.tscn)</option>
+              <option value="2">脚本(.gd)</option>
+            </select>
+        </p>
+        </div>
+        <!--资源描述-->
+        <div>
+          <p>资源描述:
+            <div class="mdui-textfield">
+              <textarea class="mdui-textfield-input res-text" rows="4" placeholder="资源简介"></textarea>
+            </div>            
+          </p>
+        </div>
+        <!--提交-->
+        <div>
+          <button class="mdui-btn mdui-color-theme-accent mdui-ripple" id="enter_res">提交资源</button>
+        </div>
+      </div>
+    </div>
+
+    <!--工具栏-->
+    <div class="mdui-toolbar mdui-appbar mdui-appbar-scroll-hide">
+      <a mdui-drawer="{target: '#left-drawer'}" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: '菜单'}">
+        <i class="mdui-icon material-icons">menu</i>
+      </a>
+      <span class="mdui-typo-title">Gtools</span>
+      <div class="mdui-toolbar-spacer"></div>
+      <a id="Search-btn" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: '搜索'}">
+        <i class="mdui-icon material-icons">search</i>
+      </a>
+      <a href="javascript:location.reload();" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: '刷新'}">
+        <i class="mdui-icon material-icons">refresh</i>
+      </a>
+    </div>
+
+    <!--抽屉栏-->
+    <div class="mdui-drawer mdui-drawer-close" id="left-drawer">
+      <ul class="mdui-list">
+        <li class="mdui-list-item mdui-ripple">
+          <div class="mdui-list-item-content" id="Upload-btn">上传资源</div>
+          <i class="mdui-list-item-icon mdui-icon material-icons">file_upload</i>
+        </li>
+        <li class="mdui-list-item mdui-ripple">
+          <div class="mdui-list-item-content" id="About-btn">关于</div>
+          <i class="mdui-list-item-icon mdui-icon material-icons">info_outline</i>
+        </li>
+        <div class="mdui-divider"></div>
+        <li class="mdui-list-item mdui-ripple" mdui-drawer-close>
+          <div class="mdui-list-item-content">关闭</div>
+          <i class="mdui-list-item-icon mdui-icon material-icons">close</i>
+        </li>
+      </ul>
+    </div>
+
+    <!--背景-->
+    <div class="bg">
+      <p>Gtools - Godot工具箱</p>
+    </div>
+
+    <!--内容-->
+    <div class="body">
+      <!--内容-->
+      <div class="content">
+        <div class="mdui-tab" mdui-tab>
+          <a href="#All" class="mdui-ripple">所有资源</a>
+          <a href="#Scene" class="mdui-ripple">场景</a>
+          <a href="#Script" class="mdui-ripple">脚本</a>
+        </div>
+        <div id="All" class="mdui-p-a-2">
+          
+        </div>
+        <div id="Scene" class="mdui-p-a-2">shopping content</div>
+        <div id="Script" class="mdui-p-a-2">images content</div>
+      </div>
+    </div>
+  
+  </body>
+<!--
+  <div id="vcomments"></div>
+          <script>
+              new Valine({
+                  el: '#vcomments',
+                  appId: '9UFYnRnYJn0LRfAShIksAccV-gzGzoHsz',
+                  appKey: 'pNFs2FTbVqPWsmxaHz8z4aU1'
+              })
+          </script>
+-->
+</html>
